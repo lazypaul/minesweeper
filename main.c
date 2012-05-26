@@ -34,7 +34,7 @@
 #define PRINT_BOOM() printf("%-3c", BOOM_CHAR)
 #define PRINT_FLAG() printf("%-3c", FLAG_CHAR)
 
-char field[VSIZE][HSIZE];
+static char field[VSIZE][HSIZE];
 
 void printfield(void (*f)(int, int)) {
   int r, c;
