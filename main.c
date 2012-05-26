@@ -37,179 +37,179 @@
 char field[VSIZE][HSIZE];
 
 void printfield(void (*f)(int, int)) {
-	int r, c;
+  int r, c;
 
-	printf("\n    ");
-	for (c = 0; c < HSIZE; c++)
-		printf("%-3d", c+1);
-	printf("\n   .");
-	for (c = 0; c < HSIZE; c++)
-		printf("---", c+1);
-	printf(".\n");
+  printf("\n    ");
+  for (c = 0; c < HSIZE; c++)
+    printf("%-3d", c+1);
+  printf("\n   .");
+  for (c = 0; c < HSIZE; c++)
+    printf("---", c+1);
+  printf(".\n");
 
-	for (r = 0; r < VSIZE; r++) {
-		printf("%3d|", r+1);
-		for (c = 0; c < HSIZE; c++)
-			f(r, c);
-		printf("| %d\n", r+1);
-	}
-	printf("   '");
-	for (c = 0; c < HSIZE; c++)
-		printf("---", c+1);
-	printf("'\n    ");
-	for (c = 0; c < HSIZE; c++)
-		printf("%-3d", c+1);
-	printf("\n\n");
+  for (r = 0; r < VSIZE; r++) {
+    printf("%3d|", r+1);
+    for (c = 0; c < HSIZE; c++)
+      f(r, c);
+    printf("| %d\n", r+1);
+  }
+  printf("   '");
+  for (c = 0; c < HSIZE; c++)
+    printf("---", c+1);
+  printf("'\n    ");
+  for (c = 0; c < HSIZE; c++)
+    printf("%-3d", c+1);
+  printf("\n\n");
 }
 
 int nearbymines(int, int);
 
 void raw(int r, int c) {
-	if (HAS_MINE(r, c))
-		IS_EXPLORED(r, c) ? PRINT_BOOM() : PRINT_MINE();
-	else
-		IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
+  if (HAS_MINE(r, c))
+    IS_EXPLORED(r, c) ? PRINT_BOOM() : PRINT_MINE();
+  else
+    IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
 }
 
 void cleared(int r, int c) {
-	if (HAS_MINE(r, c))
-		PRINT_CLEARED();
-	else
-		IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
+  if (HAS_MINE(r, c))
+    PRINT_CLEARED();
+  else
+    IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
 }
 
 void mystery(int r, int c) {
-	if (IS_EXPLORED(r, c))
-		IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
-	else
-		HAS_FLAG(r, c) ? PRINT_FLAG() : PRINT_MASK();
+  if (IS_EXPLORED(r, c))
+    IS_EMPTY(r, c) ? PRINT_EMPTY() : PRINT_NUM_NEARBY_MINES(r, c);
+  else
+    HAS_FLAG(r, c) ? PRINT_FLAG() : PRINT_MASK();
 }
 
 void genmines() {
-	int r, c;
+  int r, c;
 
-	srand(time(NULL));
+  srand(time(NULL));
 
-	for (r = 0; r < VSIZE; r++)
-		for (c = 0; c < HSIZE; c++)
-			if (rand() % MINE_CHANCE == 0)
-				SET_MINE(r, c);
+  for (r = 0; r < VSIZE; r++)
+    for (c = 0; c < HSIZE; c++)
+      if (rand() % MINE_CHANCE == 0)
+        SET_MINE(r, c);
 }
 
 int eachnear(int (*f)(int, int), int r, int c) {
-	int counter = 0;
+  int counter = 0;
 
-	// left
-	if (c != 0)
-		counter += f(r, c - 1);
-	// up
-	if (r != 0)
-		counter += f(r - 1, c);
-	// right
-	if (c != HSIZE - 1)
-		counter += f(r, c + 1);
-	// down
-	if (r != VSIZE - 1)
-		counter += f(r + 1, c);
-	// top left
-	if (r != 0 && c != 0)
-		counter += f(r - 1, c - 1);
-	// top right
-	if (r != 0 && c != HSIZE - 1)
-		counter += f(r - 1, c + 1);
-	// bottom left
-	if (r != VSIZE - 1 && c != 0)
-		counter += f(r + 1, c - 1);
-	// bottom right
-	if (r != VSIZE - 1 && c != HSIZE - 1)
-		counter += f(r + 1, c + 1);
+  // left
+  if (c != 0)
+    counter += f(r, c - 1);
+  // up
+  if (r != 0)
+    counter += f(r - 1, c);
+  // right
+  if (c != HSIZE - 1)
+    counter += f(r, c + 1);
+  // down
+  if (r != VSIZE - 1)
+    counter += f(r + 1, c);
+  // top left
+  if (r != 0 && c != 0)
+    counter += f(r - 1, c - 1);
+  // top right
+  if (r != 0 && c != HSIZE - 1)
+    counter += f(r - 1, c + 1);
+  // bottom left
+  if (r != VSIZE - 1 && c != 0)
+    counter += f(r + 1, c - 1);
+  // bottom right
+  if (r != VSIZE - 1 && c != HSIZE - 1)
+    counter += f(r + 1, c + 1);
 
-	return counter;
+  return counter;
 }
 
 int hasmine(int r, int c) {
-	return HAS_MINE(r, c);
+  return HAS_MINE(r, c);
 }
 
 int nearbymines(int r, int c) {
-	return eachnear(hasmine, r, c);
+  return eachnear(hasmine, r, c);
 }
 
 int explore(int r, int c) {
-	if (IS_EXPLORED(r, c))
-		return 1;
+  if (IS_EXPLORED(r, c))
+    return 1;
 
-	if (HAS_FLAG(r, c))
-		return 2;
+  if (HAS_FLAG(r, c))
+    return 2;
 
-	EXPLORE(r, c);
+  EXPLORE(r, c);
 
-	if (HAS_MINE(r, c))
-		return 0;
-	else if (IS_EMPTY(r, c))
-		eachnear(explore, r, c);
+  if (HAS_MINE(r, c))
+    return 0;
+  else if (IS_EMPTY(r, c))
+    eachnear(explore, r, c);
 
-	return 1;
+  return 1;
 }
 
 int done() {
-	int r, c;
+  int r, c;
 
-	for (r = 0; r < VSIZE; r++)
-		for (c = 0; c < HSIZE; c++)
-			if (! IS_EXPLORED(r, c) && ! HAS_MINE(r, c))
-				return 0;
+  for (r = 0; r < VSIZE; r++)
+    for (c = 0; c < HSIZE; c++)
+      if (! IS_EXPLORED(r, c) && ! HAS_MINE(r, c))
+        return 0;
 
-	return 1;
+  return 1;
 }
 
 void getrc(int *r, int *c) {
-	int ok ;
+  int ok ;
 
-	do {
-		printf("Enter row and column: ");
-		scanf("%d %d", r, c);
+  do {
+    printf("Enter row and column: ");
+    scanf("%d %d", r, c);
 
-		--*r;
-		--*c;
+    --*r;
+    --*c;
 
-		ok = 1;
-		ok &= (*r >= 0 && *r < VSIZE);
-		ok &= (*c >= 0 && *c < HSIZE);
-	} while (!ok);
+    ok = 1;
+    ok &= (*r >= 0 && *r < VSIZE);
+    ok &= (*c >= 0 && *c < HSIZE);
+  } while (!ok);
 }
 
 int main() {
-	int action, r, c, cont = 1;
+  int action, r, c, cont = 1;
 
-	genmines();
+  genmines();
 
-	do {
-		system("cls");
+  do {
+    system("cls");
 
-		if (cont == 2)
-			printf("Can't explore a flagged spot!\n");
+    if (cont == 2)
+      printf("Can't explore a flagged spot!\n");
 
-		printfield(mystery);
+    printfield(mystery);
 
-		printf("Enter 1 to explore\n      2 to flag\n      3 to delete flag\n");
-		scanf("%d", &action);
+    printf("Enter 1 to explore\n      2 to flag\n      3 to delete flag\n");
+    scanf("%d", &action);
 
-		getrc(&r, &c);
+    getrc(&r, &c);
 
-		if (action == 1)
-			cont = explore(r, c);
-		else if (action == 2)
-			SET_FLAG(r, c);
-		else if (action == 3)
-			DEL_FLAG(r, c);
+    if (action == 1)
+      cont = explore(r, c);
+    else if (action == 2)
+      SET_FLAG(r, c);
+    else if (action == 3)
+      DEL_FLAG(r, c);
 
-		if (done())
-			cont = -1;
-	} while (cont > 0);
+    if (done())
+      cont = -1;
+  } while (cont > 0);
 
-	system("cls");
-	cont ? printfield(cleared) : printfield(raw);
-	return cont ? 0 : 1;
+  system("cls");
+  cont ? printfield(cleared) : printfield(raw);
+  return cont ? 0 : 1;
 }
 
