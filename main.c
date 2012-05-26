@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define VSIZE 14
 #define HSIZE 14
@@ -60,6 +61,8 @@ void printfield(void (*f)(int, int)) {
 		printf("%-3d", c+1);
 	printf("\n\n");
 }
+
+int nearbymines(int, int);
 
 void raw(int r, int c) {
 	if (HAS_MINE(r, c))
