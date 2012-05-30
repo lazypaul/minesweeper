@@ -10,10 +10,10 @@
 #define EXPLORED 1 << 5
 #define FLAG 1 << 4
 
-#define MINE_CHAR 4
-#define BOOM_CHAR 15
-#define MASK_CHAR 177
-#define CLEARED_CHAR 2
+#define MINE_CHAR '!'
+#define BOOM_CHAR '@'
+#define MASK_CHAR '~'
+#define CLEARED_CHAR '+'
 #define FLAG_CHAR 'F'
 #define EMPTY_CHAR '-'
 
