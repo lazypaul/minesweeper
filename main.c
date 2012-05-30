@@ -34,6 +34,13 @@
 #define PRINT_BOOM() printf("%-3c", BOOM_CHAR)
 #define PRINT_FLAG() printf("%-3c", FLAG_CHAR)
 
+#define BAD_FLAG 2
+#define DONE -1
+
+#define ACTION_EXPLORE 1
+#define ACTION_FLAG 2
+#define ACTION_DELFLAG 3
+
 static char field[VSIZE][HSIZE];
 
 void printfield(void (*f)(int, int)) {
@@ -179,37 +186,55 @@ void getrc(int *r, int *c) {
   } while (!ok);
 }
 
+void clearscreen() {
+    system("cls");
+}
+
+void actionfeedback(int status) {
+    if (status == BAD_FLAG)
+      printf("Can't explore a flagged spot!\n");
+}
+
+int gameinprogress(int status) {
+    if (done())
+        return -1;
+    return status != 0;
+}
+
+void prompt(int *action, int *r, int *c) {
+    printf("Enter %d to explore\n"
+           "      %d to flag\n"
+           "      %d to delete flag\n",
+		   ACTION_EXPLORE, ACTION_FLAG, ACTION_DELFLAG);
+    scanf("%d", action);
+
+    getrc(r, c);
+}
+
+void handle_action(int action, int r, int c, int *status) {
+    if (action == ACTION_EXPLORE)
+      *status = explore(r, c);
+    else if (action == ACTION_FLAG)
+      SET_FLAG(r, c);
+    else if (action == ACTION_DELFLAG)
+      DEL_FLAG(r, c);
+}
+
 int main() {
-  int action, r, c, cont = 1;
+  int action, r, c, status = 1;
 
   genmines();
 
   do {
-    system("cls");
-
-    if (cont == 2)
-      printf("Can't explore a flagged spot!\n");
-
+    clearscreen();
+    actionfeedback(status);
     printfield(mystery);
+    prompt(&action, &r, &c);
+    handle_action(action, r, c, &status);
+  } while (gameinprogress(status));
 
-    printf("Enter 1 to explore\n      2 to flag\n      3 to delete flag\n");
-    scanf("%d", &action);
-
-    getrc(&r, &c);
-
-    if (action == 1)
-      cont = explore(r, c);
-    else if (action == 2)
-      SET_FLAG(r, c);
-    else if (action == 3)
-      DEL_FLAG(r, c);
-
-    if (done())
-      cont = -1;
-  } while (cont > 0);
-
-  system("cls");
-  cont ? printfield(cleared) : printfield(raw);
-  return cont ? 0 : 1;
+  clearscreen();
+  status ? printfield(cleared) : printfield(raw);
+  return status ? 0 : 1;
 }
 
